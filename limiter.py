@@ -13,6 +13,7 @@ scroll_threshold = 5  # Number of scrolls before closing apps
 app_usage = {}
 keystroke_count = 0
 scroll_count = 0
+is_dormant = False  # State to track if the script is dormant
 
 def get_current_apps():
     """Get list of running processes."""
@@ -36,7 +37,7 @@ def on_scroll(x, y, dx, dy):
 
 def monitor_apps():
     """Monitor apps and track their usage time."""
-    global keystroke_count, scroll_count
+    global keystroke_count, scroll_count, is_dormant
 
     # Start listeners for keyboard and mouse
     listener_keyboard = keyboard.Listener(on_press=on_press)
@@ -49,6 +50,15 @@ def monitor_apps():
 
     try:
         while True:
+            if is_dormant:
+                # Check if any distracting app is opened to wake up the monitor
+                active_apps = get_current_apps()
+                if any(app in active_apps for app in distracting_apps):
+                    print("Waking up monitoring due to opening a distracting app.")
+                    is_dormant = False
+                time.sleep(1)  # Sleep while dormant
+                continue
+
             active_apps = get_current_apps()
             current_time = time.time()
 
@@ -66,6 +76,7 @@ def monitor_apps():
                             os.system(f'taskkill /f /im {app}')  # Force close the app
                             print(f"{app} closed due to time limit.")
                             del app_usage[app]  # Stop monitoring this app until it's opened again
+                            is_dormant = True  # Go dormant after closing the app
                     break  # Exit after checking one app to avoid redundant checks
 
             # Check keystrokes and mouse scrolls
@@ -76,6 +87,7 @@ def monitor_apps():
                 app_usage.clear()  # Clear all app usage tracking after closing
                 keystroke_count = 0  # Reset counts after closing
                 scroll_count = 0
+                is_dormant = True  # Go dormant after closing the apps
 
             # Check every 1 second to avoid infinite looping
             time.sleep(1)
