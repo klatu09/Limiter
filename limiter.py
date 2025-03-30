@@ -3,11 +3,11 @@ import time
 import os
 from pynput import keyboard, mouse
 
-# List of distracting apps (e.g., games, social media)
-distracting_apps = ['chrome.exe', 'steam.exe', 'discord.exe']
+# List of apps 
+distracting_apps = ['notepad.exe']
 
 # Time limit (in seconds) to close apps after usage limit (60 minutes = 3600 seconds)
-time_limit = 60 * 60  # 1 hour
+time_limit = 60 * 30 # 30 hour
 
 # Track usage of apps
 app_usage = {}
@@ -60,17 +60,17 @@ def monitor_apps():
                         os.system('taskkill /f /im ' + app)  # Force close the app
 
         # Check keystrokes and mouse scrolls
-        if keystroke_count >= 5000:
+        if keystroke_count >= 10:
             for app in distracting_apps:
                 os.system('taskkill /f /im ' + app)  # Force close all distracting apps
             break  # Exit the script after closing apps
 
-        if scroll_count >= 150:
+        if scroll_count >= 5:
             for app in distracting_apps:
                 os.system('taskkill /f /im ' + app)  # Force close all distracting apps
             break  # Exit the script after closing apps
 
-        time.sleep(60)  # Check every minute
+        time.sleep(0.1)  
 
 # Run the monitoring function
 monitor_apps()
