@@ -7,7 +7,7 @@ from pynput import keyboard, mouse
 distracting_apps = ['notepad.exe']
 
 # Time limit (in seconds) to close apps after usage limit (60 minutes = 3600 seconds)
-time_limit = 60 * 30 # 30 hour
+time_limit = 60 * 30  # 30 minutes
 
 # Track usage of apps
 app_usage = {}
@@ -49,28 +49,29 @@ def monitor_apps():
         active_apps = get_current_apps()
         current_time = time.time()
 
+        # Check if any distracting app is currently running
         for app in distracting_apps:
             if app in active_apps:
                 if app not in app_usage:
+                    # App just opened, start tracking
                     app_usage[app] = current_time
                 else:
+                    # Track how long the app has been open
                     elapsed_time = current_time - app_usage[app]
-                    # Close the app if it's been running for more than the time limit
+                    # Close the app if it exceeds the time limit
                     if elapsed_time >= time_limit:
                         os.system('taskkill /f /im ' + app)  # Force close the app
 
-        # Check keystrokes and mouse scrolls
+        # Check keystrokes and mouse scrolls (no break, so the script keeps running)
         if keystroke_count >= 10:
             for app in distracting_apps:
                 os.system('taskkill /f /im ' + app)  # Force close all distracting apps
-            break  # Exit the script after closing apps
 
         if scroll_count >= 5:
             for app in distracting_apps:
                 os.system('taskkill /f /im ' + app)  # Force close all distracting apps
-            break  # Exit the script after closing apps
 
-        time.sleep(0.1)  
+        time.sleep(0.1)  # Check every 0.1 seconds
 
 # Run the monitoring function
 monitor_apps()
