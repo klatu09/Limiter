@@ -10,7 +10,7 @@ If certain conditions are met—such as reaching a set number of keystrokes or m
 ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ 
 
 
-✦ Project: Limiter  
+✦ Project # 4: Limiter  
 ✦ Author: K1atu  
 ✦ Motto: "Limit distractions, stay focused!"
 
@@ -32,8 +32,10 @@ You need the following libraries to run this script:
 
 Install the required libraries using pip:
 
-```bash
-pip install psutil pynput
+pip install pynput
+
 
 ## Disclaimer
-This tool is intended for personal productivity management and is not for malicious use. Make sure to use it responsibly on your own devices.
+This tool is intended for personal productivity management and is not for malicious use. Make sure to use it responsibly on your own devices
+
+
